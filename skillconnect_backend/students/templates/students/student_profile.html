@@ -1,0 +1,83 @@
+{% extends "students/base.html" %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block topbar_title %}Student Profile{% endblock %}
+{% block content %}
+<div class="page-header-row">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="chip-avatar" style="width:52px;height:52px;font-size:18px;border-radius:50%;background:var(--teal);color:#fff;font-family:var(--font-head);font-weight:700;display:flex;align-items:center;justify-content:center;">{{ student.get_initials }}</div>
+    <div><h1 style="font-family:var(--font-head);font-size:22px;font-weight:800;">{{ student.name }}</h1><p style="color:var(--muted);font-size:13px;">{{ student.email }} · {{ student.dept.dept_name }} · {{ student.enrollment_year }}</p></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="{% url 'student_list' %}" class="btn btn-outline">← Back</a>
+    <a href="{% url 'delete_student' student.student_id %}" class="btn btn-danger btn-sm">Delete</a>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Profile Details</div><span class="badge {% if student_type == 'Undergraduate' %}badge-teal{% else %}badge-purple{% endif %}">{{ student_type }}</span></div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Student ID</div><div style="font-size:14px;font-weight:500;">{{ student.student_id }}</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Phone</div><div style="font-size:14px;font-weight:500;">{{ student.phone|default:"—" }}</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Total Skills</div><div style="font-size:14px;font-weight:500;">{{ total_skills }}</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Department</div><div style="font-size:14px;font-weight:500;">{{ student.dept.dept_code }}</div></div>
+        {% if undergrad_profile %}
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">CGPA</div><div style="font-size:14px;font-weight:500;">{{ undergrad_profile.cgpa }} / 4.00</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Year</div><div style="font-size:14px;font-weight:500;">Year {{ undergrad_profile.year_of_study }}</div></div>
+        {% endif %}
+        {% if grad_profile %}
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;grid-column:1/-1;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Thesis</div><div style="font-size:13px;font-weight:500;">{{ grad_profile.thesis_topic|default:"—" }}</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Supervisor</div><div style="font-size:13px;font-weight:500;">{{ grad_profile.supervisor }}</div></div>
+        <div style="background:var(--cream);border-radius:8px;padding:12px 14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;">Research Area</div><div style="font-size:13px;font-weight:500;">{{ grad_profile.research_area|default:"—" }}</div></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Skills</div></div>
+    <div style="padding:12px 20px;">
+      {% for ss in student_skills %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div><div style="font-size:13px;font-weight:500;">{{ ss.skill.skill_name }}</div><div style="font-size:11px;color:var(--muted);">{{ ss.skill.category }}</div></div>
+        {% if ss.proficiency_level == 'Advanced' %}<span class="badge badge-adv">Advanced</span>{% elif ss.proficiency_level == 'Intermediate' %}<span class="badge badge-int">Intermediate</span>{% else %}<span class="badge badge-beg">Beginner</span>{% endif %}
+      </div>
+      {% empty %}
+      <p style="color:var(--muted);font-size:13px;padding:12px 0;">No skills added yet.</p>
+      {% endfor %}
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border);">
+      <form method="POST" action="{% url 'add_skill' student.student_id %}">
+        {% csrf_token %}
+        <div style="display:flex;gap:8px;">
+          <select name="skill_id" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;"><option value="">Add skill...</option>{% for skill in all_skills %}<option value="{{ skill.skill_id }}">{{ skill.skill_name }}</option>{% endfor %}</select>
+          <select name="proficiency_level" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+          <button type="submit" class="btn btn-primary btn-sm">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Club Memberships</div></div>
+    <table>
+      <thead><tr><th>Club</th><th>Role</th><th>Joined</th></tr></thead>
+      <tbody>
+        {% for m in memberships %}<tr><td>{{ m.club.club_name }}</td><td><span class="badge badge-navy">{{ m.role }}</span></td><td>{{ m.joined_date|default:"—" }}</td></tr>{% empty %}<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted);">No memberships.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Event Participations</div></div>
+    <table>
+      <thead><tr><th>Event</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for p in participations %}<tr><td>{{ p.event.event_name }}</td><td>{% if p.status == 'Attended' %}<span class="badge badge-green">Attended</span>{% elif p.status == 'Registered' %}<span class="badge badge-teal">Registered</span>{% else %}<span class="badge badge-red">Cancelled</span>{% endif %}</td><td>{{ p.registration_date|default:"—" }}</td></tr>{% empty %}<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted);">No participations.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

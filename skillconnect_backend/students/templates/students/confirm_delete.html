@@ -1,0 +1,17 @@
+{% extends "students/base.html" %}
+{% block title %}Delete Student{% endblock %}
+{% block topbar_title %}Delete Student{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:60px auto;">
+  <div class="card">
+    <div class="card-header"><div class="card-title" style="color:var(--danger);">⚠️ Confirm Delete</div></div>
+    <div class="card-body">
+      <p style="font-size:14px;margin-bottom:20px;">Are you sure you want to delete <strong>{{ student.name }}</strong>? This will also delete all their skills, participations, and club memberships. This cannot be undone.</p>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <a href="{% url 'student_profile' student.student_id %}" class="btn btn-outline">Cancel</a>
+        <form method="POST">{% csrf_token %}<button type="submit" class="btn btn-danger">Yes, Delete</button></form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
