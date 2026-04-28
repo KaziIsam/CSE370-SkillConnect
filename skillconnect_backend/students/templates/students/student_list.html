@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRAC SkillConnect — All Students</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0D1B2A;--teal:#0F7B6C;--teal-lt:#12998A;--teal-dim:#0A5449;--gold:#E8A838;--gold-lt:#FFF0CC;--cream:#F7F4EE;--white:#FFFFFF;--muted:#6B7280;--border:#E2DDD6;--danger:#C0392B;--success:#1A7A4A;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--shadow-sm:0 1px 3px rgba(13,27,42,.06);--shadow-md:0 4px 16px rgba(13,27,42,.08);--radius:10px;--radius-lg:16px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--cream);color:var(--navy);min-height:100vh;display:flex;}
+.sidebar{width:240px;min-height:100vh;background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.brand-icon{width:38px;height:38px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.brand-name{font-family:var(--font-head);font-size:15px;font-weight:800;color:#fff;line-height:1.2;}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-top:2px;}
+.sidebar-section{padding:20px 16px 8px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:600;}
+.sidebar nav{flex:1;padding:0 12px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;margin-bottom:2px;transition:all .18s ease;}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+.nav-item.active{background:var(--teal);color:#fff;font-weight:500;}
+.nav-icon{width:18px;height:18px;opacity:.7;flex-shrink:0;}
+.nav-item.active .nav-icon{opacity:1;}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.3);text-align:center;}
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:var(--font-head);font-size:16px;font-weight:700;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.avatar{width:34px;height:34px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-size:13px;font-weight:700;}
+.content{padding:32px;flex:1;}
+.page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;}
+.page-header h1{font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.page-header p{font-size:14px;color:var(--muted);}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:all .15s ease;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal-dim);}
+.btn-outline{background:transparent;color:var(--navy);border:1px solid var(--border);}
+.btn-outline:hover{background:var(--cream);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.filter-bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:20px;box-shadow:var(--shadow-sm);}
+.filter-group{display:flex;flex-direction:column;gap:5px;}
+.filter-label{font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.filter-bar select,.filter-bar input{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:13px;color:var(--navy);background:var(--white);outline:none;transition:border-color .15s;}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,123,108,.1);}
+.search-input{min-width:220px;}
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;}
+.card-header{padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-family:var(--font-head);font-size:15px;font-weight:700;}
+.result-count{font-size:12px;color:var(--muted);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{background:var(--cream);border-bottom:1px solid var(--border);}
+th{padding:10px 16px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FAFAF8;}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-adv{background:#0F7B6C;color:#fff;}
+.badge-int{background:#E6F7F4;color:#0A5449;}
+.badge-beg{background:var(--gold-lt);color:#7A5500;}
+.badge-navy{background:#E8ECF0;color:var(--navy);}
+.badge-teal{background:#E6F7F4;color:var(--teal-dim);}
+.badge-purple{background:#EEEDFE;color:#3C3489;}
+.student-chip{display:flex;align-items:center;gap:10px;}
+.chip-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-head);font-size:12px;font-weight:700;flex-shrink:0;}
+.chip-name{font-size:13px;font-weight:500;color:var(--navy);}
+.chip-sub{font-size:11px;color:var(--muted);}
+.skill-pills{display:flex;gap:4px;flex-wrap:wrap;}
+.action-cell{display:flex;gap:6px;}
+.notif-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;display:inline-block;}
+.pagination{display:flex;align-items:center;gap:6px;padding:16px 20px;border-top:1px solid var(--border);}
+.page-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid var(--border);background:var(--white);font-size:13px;cursor:pointer;color:var(--navy);text-decoration:none;transition:all .15s;}
+.page-btn:hover{background:var(--cream);}
+.page-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.content>*{animation:fadeUp .3s ease both;}
+.content>*:nth-child(2){animation-delay:.05s;}
+.content>*:nth-child(3){animation-delay:.1s;}
+
+/* Modal */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(13,27,42,.45);z-index:200;align-items:center;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--radius-lg);width:520px;max-width:95vw;box-shadow:0 12px 40px rgba(13,27,42,.12);animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:var(--font-head);font-size:16px;font-weight:700;}
+.modal-close{cursor:pointer;background:none;border:none;font-size:22px;color:var(--muted);line-height:1;}
+.modal-body{padding:24px;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.profile-field{background:var(--cream);border-radius:8px;padding:12px 14px;}
+.profile-field-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.profile-field-val{font-size:14px;font-weight:500;color:var(--navy);}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+    <div class="brand-name">BRAC SkillConnect</div>
+    <div class="brand-sub">CSE370 · Database Project</div>
+  </div>
+  <nav>
+    <div class="sidebar-section">Member 1 — My Module</div>
+    <a href="dashboard.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+    <a href="student_list.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>All Students</a>
+    <a href="skill_search.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search by Skill</a>
+    <a href="skill_report.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Skill Report</a>
+    <a href="add_student.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Add Student</a>
+    <div class="sidebar-section">Other Modules</div>
+    <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Clubs & Events</a>
+    <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Participation</a>
+  </nav>
+  <div class="sidebar-footer">CSE370 · Group Project · 2024</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">All Students</div>
+    <div class="topbar-right">
+      <span class="notif-dot"></span>
+      <div class="avatar">AH</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="page-header">
+      <div>
+        <h1>All Students</h1>
+        <p>View, filter and manage student profiles and skills.</p>
+      </div>
+      <a href="add_student.html" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Student
+      </a>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Search</span>
+        <input class="search-input" type="text" placeholder="Name or email..." id="searchInput" oninput="filterTable()">
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Department</span>
+        <select id="deptFilter" onchange="filterTable()">
+          <option value="">All Departments</option>
+          <option>CSE</option>
+          <option>BBA</option>
+          <option>ECO</option>
+          <option>ENG</option>
+          <option>EEE</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Type</span>
+        <select id="typeFilter" onchange="filterTable()">
+          <option value="">All Types</option>
+          <option>Undergrad</option>
+          <option>Grad</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Year</span>
+        <select id="yearFilter" onchange="filterTable()">
+          <option value="">All Years</option>
+          <option>2018</option><option>2019</option><option>2020</option>
+          <option>2021</option><option>2022</option><option>2023</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- Table card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Student Registry</div>
+        <div class="result-count" id="resultCount">Showing 10 students</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Dept</th>
+              <th>Type</th>
+              <th>Year</th>
+              <th>Skills</th>
+              <th>Top Skill</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-dept="CSE" data-type="Undergrad" data-year="2022">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#0F7B6C;">AH</div><div><div class="chip-name">Arif Hossain</div><div class="chip-sub">arif@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">CSE</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2022</td>
+              <td>4</td>
+              <td><span class="badge badge-adv">Python · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="CSE" data-type="Undergrad" data-year="2021">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#534AB7;">NJ</div><div><div class="chip-name">Nusrat Jahan</div><div class="chip-sub">nusrat@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">CSE</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2021</td>
+              <td>4</td>
+              <td><span class="badge badge-adv">Figma · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="BBA" data-type="Undergrad" data-year="2022">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#E8A838;">TA</div><div><div class="chip-name">Tanvir Ahmed</div><div class="chip-sub">tanvir@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">BBA</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2022</td>
+              <td>3</td>
+              <td><span class="badge badge-adv">Public Speaking · Adv</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="ECO" data-type="Undergrad" data-year="2023">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#1A7A4A;">SK</div><div><div class="chip-name">Sumaiya Khan</div><div class="chip-sub">sumaiya@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">ECO</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2023</td>
+              <td>2</td>
+              <td><span class="badge badge-beg">Data Analysis · Beg</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="CSE" data-type="Undergrad" data-year="2020">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#C0392B;">RI</div><div><div class="chip-name">Rafiq Islam</div><div class="chip-sub">rafiq@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">CSE</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2020</td>
+              <td>5</td>
+              <td><span class="badge badge-adv">Python · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="ENG" data-type="Undergrad" data-year="2022">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#D85A30;">PS</div><div><div class="chip-name">Priya Sharma</div><div class="chip-sub">priya@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">ENG</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2022</td>
+              <td>3</td>
+              <td><span class="badge badge-adv">Public Speaking · Adv</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="BBA" data-type="Undergrad" data-year="2021">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#0D1B2A;">MH</div><div><div class="chip-name">Mehedi Hassan</div><div class="chip-sub">mehedi@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">BBA</span></td>
+              <td><span class="badge badge-teal">Undergrad</span></td>
+              <td>2021</td>
+              <td>2</td>
+              <td><span class="badge badge-int">Web Dev · Int</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="CSE" data-type="Grad" data-year="2019">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#085041;">LA</div><div><div class="chip-name">Dr. Lamia Akter</div><div class="chip-sub">lamia@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">CSE</span></td>
+              <td><span class="badge badge-purple">Grad</span></td>
+              <td>2019</td>
+              <td>2</td>
+              <td><span class="badge badge-adv">ML · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="EEE" data-type="Grad" data-year="2020">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#1A5F7A;">KU</div><div><div class="chip-name">Karim Uddin</div><div class="chip-sub">karim@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">EEE</span></td>
+              <td><span class="badge badge-purple">Grad</span></td>
+              <td>2020</td>
+              <td>2</td>
+              <td><span class="badge badge-adv">C++ · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+            <tr data-dept="CSE" data-type="Grad" data-year="2018">
+              <td><div class="student-chip"><div class="chip-avatar" style="background:#7F77DD;">SA</div><div><div class="chip-name">Shirin Akhter</div><div class="chip-sub">shirin@bracu.ac.bd</div></div></div></td>
+              <td><span class="badge badge-navy">CSE</span></td>
+              <td><span class="badge badge-purple">Grad</span></td>
+              <td>2018</td>
+              <td>2</td>
+              <td><span class="badge badge-adv">ML · Advanced</span></td>
+              <td><div class="action-cell"><button class="btn btn-outline btn-sm" onclick="openModal('profileModal')">View</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <a href="#" class="page-btn active">1</a>
+        <a href="#" class="page-btn">2</a>
+        <a href="#" class="page-btn">›</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Profile Modal -->
+<div class="modal-backdrop" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Student Profile</div>
+      <button class="modal-close" onclick="closeModal('profileModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+        <div class="chip-avatar" style="width:52px;height:52px;font-size:18px;background:var(--teal);">AH</div>
+        <div>
+          <div style="font-family:var(--font-head);font-size:18px;font-weight:800;">Arif Hossain</div>
+          <div style="font-size:13px;color:var(--muted);">arif@bracu.ac.bd · CSE · 2022</div>
+        </div>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-field"><div class="profile-field-label">Student ID</div><div class="profile-field-val">1</div></div>
+        <div class="profile-field"><div class="profile-field-label">Department</div><div class="profile-field-val">Computer Science</div></div>
+        <div class="profile-field"><div class="profile-field-label">Type</div><div class="profile-field-val">Undergrad · Year 3</div></div>
+        <div class="profile-field"><div class="profile-field-label">CGPA</div><div class="profile-field-val">3.85 / 4.00</div></div>
+        <div class="profile-field"><div class="profile-field-label">Credits</div><div class="profile-field-val">90 completed</div></div>
+        <div class="profile-field"><div class="profile-field-label">Total Skills</div><div class="profile-field-val">4 skills</div></div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:8px;">Skills</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-adv">Python · Advanced</span>
+          <span class="badge badge-int">SQL · Intermediate</span>
+          <span class="badge badge-beg">Machine Learning · Beginner</span>
+          <span class="badge badge-int">Web Dev · Intermediate</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('profileModal')">Close</button>
+      <a href="#" class="btn btn-primary">Edit Student</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-backdrop').forEach(b=>{b.addEventListener('click',e=>{if(e.target===b)b.classList.remove('open');});});
+
+function filterTable(){
+  const search=document.getElementById('searchInput').value.toLowerCase();
+  const dept=document.getElementById('deptFilter').value;
+  const type=document.getElementById('typeFilter').value;
+  const year=document.getElementById('yearFilter').value;
+  const rows=document.querySelectorAll('#studentTable tbody tr');
+  let count=0;
+  rows.forEach(row=>{
+    const text=row.textContent.toLowerCase();
+    const rDept=row.dataset.dept||'';
+    const rType=row.dataset.type||'';
+    const rYear=row.dataset.year||'';
+    const show=(!search||text.includes(search))&&(!dept||rDept===dept)&&(!type||rType===type)&&(!year||rYear===year);
+    row.style.display=show?'':'none';
+    if(show)count++;
+  });
+  document.getElementById('resultCount').textContent=`Showing ${count} student${count!==1?'s':''}`;
+}
+
+function clearFilters(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('deptFilter').value='';
+  document.getElementById('typeFilter').value='';
+  document.getElementById('yearFilter').value='';
+  filterTable();
+}
+</script>
+</body>
+</html>
