@@ -1,27 +1,23 @@
 CREATE DATABASE skillconnect CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE skillconnect;
 
--- ============================================================
--- TABLE 1: Department (no foreign keys — create first)
--- ============================================================
+-- TABLE 1: Department 
 CREATE TABLE Department (
     dept_id   INT AUTO_INCREMENT PRIMARY KEY,
     dept_name VARCHAR(100) NOT NULL,
     dept_code VARCHAR(10)  NOT NULL UNIQUE
 );
 
--- ============================================================
+
 -- TABLE 2: Skill
--- ============================================================
 CREATE TABLE Skill (
     skill_id   INT AUTO_INCREMENT PRIMARY KEY,
     skill_name VARCHAR(100) NOT NULL UNIQUE,
     category   VARCHAR(50)  NOT NULL
 );
 
--- ============================================================
+
 -- TABLE 3: Skill_Tools (multi-valued attribute)
--- ============================================================
 CREATE TABLE Skill_Tools (
     skill_id  INT          NOT NULL,
     tool_name VARCHAR(100) NOT NULL,
@@ -29,9 +25,8 @@ CREATE TABLE Skill_Tools (
     FOREIGN KEY (skill_id) REFERENCES Skill(skill_id) ON DELETE CASCADE
 );
 
--- ============================================================
+
 -- TABLE 4: Club
--- ============================================================
 CREATE TABLE Club (
     club_id       INT AUTO_INCREMENT PRIMARY KEY,
     club_name     VARCHAR(100) NOT NULL UNIQUE,
@@ -39,9 +34,8 @@ CREATE TABLE Club (
     founding_year YEAR
 );
 
--- ============================================================
+
 -- TABLE 5: Student (depends on Department)
--- ============================================================
 CREATE TABLE Student (
     student_id      INT AUTO_INCREMENT PRIMARY KEY,
     name            VARCHAR(100) NOT NULL,
@@ -53,9 +47,8 @@ CREATE TABLE Student (
         ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- ============================================================
+
 -- TABLE 6: Event (depends on Club)
--- ============================================================
 CREATE TABLE Event (
     event_id         INT AUTO_INCREMENT PRIMARY KEY,
     event_name       VARCHAR(100) NOT NULL,
@@ -67,9 +60,8 @@ CREATE TABLE Event (
     FOREIGN KEY (club_id) REFERENCES Club(club_id) ON DELETE RESTRICT
 );
 
--- ============================================================
--- TABLE 7: UndergradStudent (ISA subtype)
--- ============================================================
+
+-- TABLE 7: UndergradStudent 
 CREATE TABLE UndergradStudent (
     student_id       INT            PRIMARY KEY,
     cgpa             DECIMAL(3,2)   NOT NULL DEFAULT 0.00,
@@ -80,9 +72,8 @@ CREATE TABLE UndergradStudent (
     FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE
 );
 
--- ============================================================
--- TABLE 8: GradStudent (ISA subtype)
--- ============================================================
+
+-- TABLE 8: GradStudent 
 CREATE TABLE GradStudent (
     student_id    INT          PRIMARY KEY,
     thesis_topic  VARCHAR(200),
@@ -91,9 +82,8 @@ CREATE TABLE GradStudent (
     FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE
 );
 
--- ============================================================
+
 -- TABLE 9: Student_Skill (junction — M:N)
--- ============================================================
 CREATE TABLE Student_Skill (
     student_id        INT  NOT NULL,
     skill_id          INT  NOT NULL,
@@ -104,9 +94,8 @@ CREATE TABLE Student_Skill (
     FOREIGN KEY (skill_id)   REFERENCES Skill(skill_id)     ON DELETE CASCADE
 );
 
--- ============================================================
+
 -- TABLE 10: Participation (junction — M:N)
--- ============================================================
 CREATE TABLE Participation (
     student_id        INT  NOT NULL,
     event_id          INT  NOT NULL,
@@ -117,9 +106,8 @@ CREATE TABLE Participation (
     FOREIGN KEY (event_id)   REFERENCES Event(event_id)     ON DELETE CASCADE
 );
 
--- ============================================================
+
 -- TABLE 11: ClubMembership (associative entity)
--- ============================================================
 CREATE TABLE ClubMembership (
     student_id  INT NOT NULL,
     club_id     INT NOT NULL,
@@ -131,7 +119,6 @@ CREATE TABLE ClubMembership (
     FOREIGN KEY (club_id)    REFERENCES Club(club_id)       ON DELETE CASCADE
 );
 
--- ============================================================
+
 -- VERIFY: Show all created tables
--- ============================================================
 SHOW TABLES;

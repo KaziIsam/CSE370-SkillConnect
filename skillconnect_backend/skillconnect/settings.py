@@ -53,15 +53,12 @@ WSGI_APPLICATION = 'skillconnect.wsgi.application'
 # ══════════════════════════════════════════════════════
 DATABASES = {
     'default': {
-        'ENGINE':  'django.db.backends.mysql',
-        'NAME':    'skillconnect',
-        'USER':    'root',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'skillconnect',
+        'USER': 'root',
         'PASSWORD': '',
-        'HOST':    '127.0.0.1',
-        'PORT':    '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
